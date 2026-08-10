@@ -17,32 +17,6 @@ Analisar todos: exibir um panorama geral dos dados cadastrados.
 Cruzar dados: executar o algoritmo de matchmaking, comparando setor e capital disponível para gerar as combinações válidas entre startups e investidores.
 Estrutura de dados
 
-Startup
-
-python
-{'nome': 'EcoTech', 'setor': 'Sustentabilidade', 'investimento_necessario': 150000}
-
-Investidor
-
-python
-{'nome': 'Venture Rio', 'setores_interesse': ['Fintech', 'Agritech'], 'capital_disponivel': 600000}
-Banco de dados
-
-Tabelas criadas em RIW27.bd:
-
-STARTUPS(id, nome, setor, investimento_necessario)
-INVESTIDORES(id, nome, setor_interesse, capital_disponivel)
-Regra de matchmaking
-
-Uma combinação startup–investidor é considerada válida quando:
-
-python
-startup['setor'] in investidor['setores_interesse']
-and investidor['capital_disponivel'] >= startup['investimento_necessario']
-Como executar
-bash
-python matchmaking.py
-
 O menu apresentará as opções numeradas (1 a 7) para inscrever, atualizar, deletar, listar, analisar e cruzar os dados.
 
 Status
