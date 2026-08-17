@@ -11,6 +11,7 @@
 
 import sqlite3 as bd
 
+setores= ['Fintech', 'Agritech']
 
 def criar_banco():
     with bd.connect('RIW27.bd') as conexao:
@@ -27,60 +28,66 @@ def criar_banco():
                        nome TEXT NOT NULL,
                        setor_interesse TEXT NOT NULL,
                        capital_disponivel INTEGER) ''')
-        cursor.commit()
+        conexao.commit()
         return conexao
 
 def menu():
     print('Opção 1: Inscrever ')
-    print('Opção 3: Atualizar ')
-    print('Opção 4: Deletar ')
-    print('Opção 5: Listar ')
-    print('Opção 6: Analisar todos ')
-    print('Opção 7: Cruzar dados ')
+    print('Opção 2: Atualizar ')
+    print('Opção 3: Deletar ')
+    print('Opção 4: Listar ')
+    print('Opção 5: Analisar todos ')
+    print('Opção 6: Cruzar dados ')
     opcao = input('Digite sua opção(apenas número): ')
     return opcao
 
+def leitura_startups():
+    with bd.connect('RIW27.bd') as conexao:
+            cursor = conexao.cursor()
+            cursor.execute('SELECT * FROM STARTUPS')
+            startups = cursor.fetchall()
+            for startup in startups:
+                (id,nome) = startup
+                print(f'Nome da startup: {nome}')
+
+def inscrever(tipo):
+    if tipo == 1: #tipo 1 = startups
+        print('Vamos inscrever uma startup!')
+        with bd.connect('RIW27.bd') as conexao:
+            cursor = conexao.cursor()
+            print('Para voce increver uma startup, precisamos das seguintes informações: nome, setor e investimento necessario.')
+            print('Primeiro vamos começar pelo nome.')
+            nome_startup = input('Escreva o nome da sua startup: ')
+            print(f'Em seguida o setor que esta empresa atua: {setores}.')
+            setor = input('Selecione o setor: ')
+            print('Por fim, o investimento necessario que essa empresa necessita')
+            investimento_necessario = int(input('Escreva o valor: '))
+            cursor.execute('INSERT INTO STARTUPS (nome,setor,investimento_necessario) VALUES(?,?,?)',(nome_startup,setor,investimento_necessario))
+            print(f'Inscrição da(o) {nome_startup} concluído com sucesso!🥳')
+            conexao.commit
+    elif tipo == 2: #tipo 2 = insvestidor
+        with bd.connect('RIW27.bd') as conexao:
+            cursor = conexao.cursor()
+            print('Vamos inscrever um investidor!')
+            print('Para voce increver uma startup, precisamos das seguintes informações: nome, setor_interesse e capital disponível.')
+            print('Primeiro vamos começar pelo nome.')
+            nome_investidor = input('Digite seu nome: ')
+            print(f'Em seguida o setor de interesse: {setores}.')
+            setor_interesse = input('Escreva o setor: ')
+            print('Por fim, o seu capital disponivel')
+            capital_disponivel = int(input('Digite o valor: '))
+            cursor.execute('INSERT INTO INVESTIDORES (nome,setor_interesse,capital_disponivel) VALUES(?,?,?)',(nome_investidor,setor_interesse,capital_disponivel))
+            conexao.commit()
+
+    else: 
+        print('Digite um valor válido')  
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def main(opcao):
+def main():
 
     while True:
         opcao = menu()
         if opcao == '1':
-            print('Você deseja inscrever uma startup / investidor?')
-            opcao_1 = input()
-            if opcao_1 == 'startup':
-                pass
-                # colocar a função de criação
-            else:
-                pass
-                # colocar a função de criação
+            print('Digite 1 para inscrever uma startup e 2 para um investidor!')
+            inscrever(tipo = int(input()))
+main()
