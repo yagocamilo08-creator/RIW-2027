@@ -35,8 +35,8 @@ def menu():
     print('Opção 1: Inscrever ')
     print('Opção 2: Analisar todos ')
     print('Opção 3: Deletar ')
-    print('Opção 4: Atualizar ')
-    print('Opção 5: Listar ')
+    print('Opção 4: Listar ')
+    print('Opção 5: Atualizar ')
     print('Opção 6: Cruzar dados ')
     opcao = input('Digite sua opção(apenas número): ')
     return opcao
@@ -109,7 +109,7 @@ def deletar(tipo):
                 cursor.execute('DELETE FROM STARTUPS WHERE nome = ?', (nome,))
                 conexao.commit()
                 print(f'A startup {nome} foi deletado!')
-            break
+            
 
 
         elif tipo == 2: #tipo 2 = insvestidor
@@ -120,49 +120,14 @@ def deletar(tipo):
                 cursor.execute('DELETE FROM INVESTIDORES WHERE nome = ?', (nome,))
                 conexao.commit()
                 print(f'O(a) investidor(a) {nome} foi deletado(a)!')
-            break
 
         else: 
             print('Digite um valor válido') 
     
-def atualizar(tipo):
-    while True:
-        if tipo == 1: #tipo 1 = startups
-            with bd.connect('RIW27.bd') as conexao:
-                cursor = conexao.cursor()
-                leitura(tipo)
-                nome = input('Qual startup deseja atualizar: ')
-                setor = ('Qual será o novo setor desta startup: ')
-                escolha = input('Essa startup terá um novo valor de investimento necessário(S/N)?: ')
-                if escolha == 'S':
-                    investimento_necessario = ('Qual será o novo valor de investimento necessário ')
-                else: 
-                    pass
-                cursor.execute('UPDATE STARTUPS SET setor,investimento_necessario = ?,? WHERE nome = ?',(setor,investimento_necessario,nome))
-                conexao.commit()
-                break
-            
-        elif tipo == 2: #tipo 2 = startups
-            with bd.connect('RIW27.bd') as conexao:
-                cursor = conexao.cursor()
-                leitura(tipo)
-                nome = input('Qual investidor deseja atualizar: ')
-                setor = ('Qual setor voce tem interesse?  ')
-                escolha = input('Esse(a) investidor terá um novo valor de capital disponivel(S/N)?  ')
-                if escolha == 'S':
-                    capital_disponivel = ('Qual será o novo capital disponível:  ')
-                else: 
-                    pass
-                cursor.execute('UPDATE INVESTIDORES SET setor_interesse,capital_disponivel = ?,? WHERE nome = ?',(setor,capital_disponivel,nome))
-                conexao.commit()
-                break
-
-
-
 
 
 def main():
-    
+
     while True:
         opcao = menu()
         if opcao == '1':
@@ -173,8 +138,5 @@ def main():
             leitura(tipo = int(input()))
         elif opcao == '3':
             print('Digite 1 para inscrever uma startup e 2 para um investidor!')
-            deletar(tipo = int(input()))
-        elif opcao == '4':
-            print('Digite 1 para inscrever uma startup e 2 para um investidor!')
-            atualizar(tipo = int(input()))
+            (tipo = int(input()))
 main()
