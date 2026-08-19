@@ -201,14 +201,20 @@ def cruzar_dados():
         cursor = conexao.cursor()
         cursor.execute('SELECT * FROM STARTUPS')
         startups = cursor.fetchall()
-        for startup in startups:
-            (id,nome,setor,investimento_necessario) = startup
         cursor.execute('SELECT * FROM INVESTIDORES')
         investidores = cursor.fetchall()
-        for investidor in investidores:
-            (id,nome,setor_interesse,capital_disponivel) = investidor        
-        if setor_interesse == setor and capital_disponivel >= investimento_necessario:
-                
+        encontrou_par = False
+        for startup in startups:
+            for investidor in investidores:
+                (id,nome_startup,setor,investimento_necessario) = startup
+                (id,nome_investidor,setor_interesse,capital_disponivel) = investidor        
+                if setor_interesse == setor and capital_disponivel >= investimento_necessario:
+                    encontrou_par = True
+                    print(f'✅ Match: {nome_startup} ({setor}, precisa de {investimento_necessario}) '
+                           f'com {nome_investidor} (capital de {capital_disponivel})')
+        if not encontrou_par:
+            print('Nenhum par compatível foi encontrado.')
+
 def main():
     
     while True:
@@ -225,4 +231,8 @@ def main():
         elif opcao == '4':
             print('Digite 1 para inscrever uma startup e 2 para um investidor!')
             atualizar(tipo = int(input()))
+        elif opcao == '5':
+            cruzar_dados()
+        else:
+            print('Digite uma opção válida!')
 main()
