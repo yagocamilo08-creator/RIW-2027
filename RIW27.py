@@ -33,11 +33,10 @@ def criar_banco():
 
 def menu():
     print('Opção 1: Inscrever ')
-    print('Opção 2: Analisar todos ')
+    print('Opção 2: Analisar todos/Listar ')
     print('Opção 3: Deletar ')
     print('Opção 4: Atualizar ')
-    print('Opção 5: Listar ')
-    print('Opção 6: Cruzar dados ')
+    print('Opção 5: Cruzar dados ')
     opcao = input('Digite sua opção(apenas número): ')
     return opcao
 
@@ -124,7 +123,14 @@ def deletar(tipo):
 
         else: 
             print('Digite um valor válido') 
-    
+
+def confirmar(mensagem):
+    while True:
+        resposta = input(mensagem).strip().upper()
+        if resposta in ('S', 'N'):
+            return resposta
+        print('Digite apenas S ou N.') == 'N'
+        
 def atualizar(tipo):
     while True:
         if tipo == 1: #tipo 1 = startups
@@ -132,35 +138,77 @@ def atualizar(tipo):
                 cursor = conexao.cursor()
                 leitura(tipo)
                 nome = input('Qual startup deseja atualizar: ')
-                setor = ('Qual será o novo setor desta startup: ')
-                escolha = input('Essa startup terá um novo valor de investimento necessário(S/N)?: ')
-                if escolha == 'S':
-                    investimento_necessario = ('Qual será o novo valor de investimento necessário ')
+
+                if confirmar('Deseja realmente mudar algo nesta startup(S/N)? '):
+                    print('Nenhuma alteração foi feita')
+                    return
+
+                print('O que deseja atualizar? ')
+                print('1- Nome')
+                print('2- Setor')
+                print('3- Investimento Necessário')
+                campo = input('Qual das opções voce deseja(digite somente o número): ')
+
+                if campo == '1':
+                    novo_valor = input('Digite o novo nome: ')
+                    cursor.execute('UPDATE STARTUPS SET nome = ? WHERE nome = ?', (novo_valor, nome))
+                elif campo == '2':
+                    novo_valor = input(f'Para qual setor deseja atualizar {setores}: ')
+                    cursor.execute('UPDATE STARTUPS SET setor = ? WHERE nome = ?', (novo_valor, nome))
+                elif campo == '3':
+                    novo_valor = int(input('Qual será o novo investimento necessário:  '))
+                    cursor.execute('UPDATE STARTUPS SET investimento_necessario = ? WHERE nome = ?', (novo_valor, nome))
                 else: 
-                    pass
-                cursor.execute('UPDATE STARTUPS SET setor,investimento_necessario = ?,? WHERE nome = ?',(setor,investimento_necessario,nome))
+                    print('Opção inválida. Nenhuma alteração foi feita.')
+                    return 
                 conexao.commit()
-                break
-            
-        elif tipo == 2: #tipo 2 = startups
+                print('Atualização feita com sucesso!')
+        elif tipo == 2: # Tipo 2 = Investidores
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
                 leitura(tipo)
                 nome = input('Qual investidor deseja atualizar: ')
-                setor = ('Qual setor voce tem interesse?  ')
-                escolha = input('Esse(a) investidor terá um novo valor de capital disponivel(S/N)?  ')
-                if escolha == 'S':
-                    capital_disponivel = ('Qual será o novo capital disponível:  ')
+
+                if confirmar('Deseja realmente mudar algo neste investidor(S/N)? ') == 'N':
+                    print('Nenhuma alteração foi feita')
+                    return
+
+                print('O que deseja atualizar? ')
+                print('1- Nome')
+                print('2- Setor de Interesse')
+                print('3- Capital Disponível ')
+                campo = input('Qual das opções voce deseja(digite somente o número): ')
+
+                if campo == '1':
+                    novo_valor = input('Digite o novo nome: ')
+                    cursor.execute('UPDATE INVESTIDORES SET nome = ? WHERE nome = ?', (novo_valor, nome))
+                elif campo == '2':
+                    novo_valor = input(f'Qual será seu novo setor de interesse {setores}: ')
+                    cursor.execute('UPDATE INVESTIDORES SET setor_interesse = ? WHERE nome = ?', (novo_valor, nome))
+                elif campo == '3':
+                    novo_valor = int(input('Qual seu novo capital disponível :  '))
+                    cursor.execute('UPDATE INVESTIDORES SET capital_disponivel = ? WHERE nome = ?', (novo_valor, nome))
                 else: 
-                    pass
-                cursor.execute('UPDATE INVESTIDORES SET setor_interesse,capital_disponivel = ?,? WHERE nome = ?',(setor,capital_disponivel,nome))
+                    print('Opção inválida. Nenhuma alteração foi feita.')
+                    return 
                 conexao.commit()
-                break
+                print('Atualização feita com sucesso!')
+        else:
+            print('Digite um valor válido')
 
-
-
-
-
+def cruzar_dados():
+    with bd.connect('RIW27.bd') as conexao:
+        cursor = conexao.cursor()
+        cursor.execute('SELECT * FROM STARTUPS')
+        startups = cursor.fetchall()
+        for startup in startups:
+            (id,nome,setor,investimento_necessario) = startup
+        cursor.execute('SELECT * FROM INVESTIDORES')
+        investidores = cursor.fetchall()
+        for investidor in investidores:
+            (id,nome,setor_interesse,capital_disponivel) = investidor        
+        if setor_interesse == setor and capital_disponivel >= investimento_necessario:
+                
 def main():
     
     while True:
