@@ -14,6 +14,12 @@ import sqlite3 as bd
 setores= ['Fintech', 'Healthtech', 'Edtech', 'E-commerce', 'SaaS B2B', 'Foodtech', 'Proptech', 'Insurtech', 'Agtech', 'Cleantech', 'Logtech', 'Mobilidade', 'Martech', 'Gaming', 'Web3/Blockchain', 'Deeptech (IA/Biotech)', 'Govtech', 'HRtec']
 
 def criar_banco():
+
+    """
+    Cria (se ainda não existir) o banco de dados RIW27.bd e as tabelas
+    STARTUPS e INVESTIDORES, cada uma com seus respectivos campos.
+    """
+
     with bd.connect('RIW27.bd') as conexao:
         cursor = conexao.cursor()
         cursor.execute('''
@@ -31,7 +37,13 @@ def criar_banco():
         conexao.commit()
         return conexao
 
-def menu():
+def menu(): 
+    
+    """
+    Exibe as opções do sistema na tela e devolve a opção digitada pelo usuário
+    (ainda como texto, sem converter para número).
+    """
+
     print('Opção 1: Inscrever ')
     print('Opção 2: Analisar todos/Listar ')
     print('Opção 3: Deletar ')
@@ -41,7 +53,14 @@ def menu():
     opcao = input('Digite sua opção(apenas número): ')
     return opcao
 
-def pedir_numero(mensagem):
+def pedir_numero(mensagem): 
+
+    """
+    Pede um número inteiro ao usuário e só retorna quando a entrada for válida.
+    Repete a pergunta caso o usuário digite algo que não seja um número,
+    ou um número negativo.
+    """
+
     while True:
         try:
             n = int(input(mensagem))
@@ -53,6 +72,12 @@ def pedir_numero(mensagem):
             print('Digite um número válido.')
 
 def confirmar(mensagem):
+
+    """
+    Pede uma confirmação (S ou N) ao usuário e só retorna quando a resposta
+    for válida. Usada antes de ações que alteram dados, como o 'atualizar'.
+    """
+
     while True:
         resposta = input(mensagem).strip().upper()
         if resposta in ('S', 'N'):
@@ -60,6 +85,13 @@ def confirmar(mensagem):
         print('Digite apenas S ou N.') == 'N'
 
 def leitura(tipo):
+
+    """
+    Lista os registros salvos no banco.
+    tipo 1 -> mostra todas as startups
+    tipo 2 -> mostra todos os investidores
+    """
+
     while True:
         if tipo == 1:
             with bd.connect('RIW27.bd') as conexao:
@@ -84,6 +116,13 @@ def leitura(tipo):
             
 
 def inscrever(tipo):
+
+    """
+    Cadastra um novo registro no banco.
+    tipo 1 -> cadastra uma startup (nome, setor, investimento necessário)
+    tipo 2 -> cadastra um investidor (nome, setor de interesse, capital disponível)
+    """
+
     while True:
         if tipo == 1: #tipo 1 = startups
             print('Vamos inscrever uma startup!')
@@ -119,6 +158,14 @@ def inscrever(tipo):
             print('Digite um valor válido') 
              
 def deletar(tipo):
+
+    """
+    Remove um registro do banco pelo nome.
+    tipo 1 -> deleta uma startup
+    tipo 2 -> deleta um investidor
+    Antes de pedir o nome, chama leitura(tipo) para mostrar os registros existentes.
+    """
+
     while True:
         if tipo == 1: #tipo 1 = startups
             with bd.connect('RIW27.bd') as conexao:
@@ -146,6 +193,14 @@ def deletar(tipo):
 
         
 def atualizar(tipo):
+
+    """
+    Edita um campo específico de um registro já cadastrado.
+    tipo 1 -> atualiza uma startup (nome, setor ou investimento necessário)
+    tipo 2 -> atualiza um investidor (nome, setor de interesse ou capital disponível)
+    Pede confirmação antes de aplicar a alteração.
+    """
+
     while True:
         if tipo == 1: #tipo 1 = startups
             with bd.connect('RIW27.bd') as conexao:
@@ -214,6 +269,18 @@ def atualizar(tipo):
             print('Digite um valor válido')
 
 def cruzar_dados():
+
+    """
+    Compara todas as startups com todos os investidores cadastrados e
+    imprime na tela os pares que forem compatíveis.
+ 
+    Um par é considerado match quando:
+    - o setor da startup é igual ao setor de interesse do investidor
+      (comparação feita ignorando maiúsculas/minúsculas e espaços extras)
+    - o capital disponível do investidor é maior ou igual ao investimento
+      necessário pela startup
+    """
+
     with bd.connect('RIW27.bd') as conexao:
         cursor = conexao.cursor()
         cursor.execute('SELECT * FROM STARTUPS')
@@ -233,6 +300,10 @@ def cruzar_dados():
             print('Nenhum par compatível foi encontrado.')
 
 def main():
+    """
+    Loop principal do programa: mostra o menu e chama a função
+    correspondente à opção escolhida, até o usuário sair (opção 6).
+    """
     
     while True:
         opcao = menu()
