@@ -11,7 +11,7 @@
 
 import sqlite3 as bd
 
-setores= ['Fintech, Healthtech, Edtech, E-commerce, SaaS B2B, Foodtech, Proptech, Insurtech, Agtech, Cleantech, Logtech, Mobilidade, Martech, Gaming, Web3/Blockchain, Deeptech (IA/Biotech), Govtech, HRtec']
+setores= ['Fintech', 'Healthtech', 'Edtech', 'E-commerce', 'SaaS B2B', 'Foodtech', 'Proptech', 'Insurtech', 'Agtech', 'Cleantech', 'Logtech', 'Mobilidade', 'Martech', 'Gaming', 'Web3/Blockchain', 'Deeptech (IA/Biotech)', 'Govtech', 'HRtec']
 
 def criar_banco():
     with bd.connect('RIW27.bd') as conexao:
@@ -41,6 +41,24 @@ def menu():
     opcao = input('Digite sua opção(apenas número): ')
     return opcao
 
+def pedir_numero(mensagem):
+    while True:
+        try:
+            n = int(input(mensagem))
+            if n <0:
+                print('Número inválido!')
+            else:
+                return n
+        except ValueError :
+            print('Digite um número válido.')
+
+def confirmar(mensagem):
+    while True:
+        resposta = input(mensagem).strip().upper()
+        if resposta in ('S', 'N'):
+            return resposta
+        print('Digite apenas S ou N.') == 'N'
+
 def leitura(tipo):
     while True:
         if tipo == 1:
@@ -63,6 +81,7 @@ def leitura(tipo):
                     break
         else: 
             print('Digite um valor válido') 
+            
 
 def inscrever(tipo):
     while True:
@@ -76,7 +95,7 @@ def inscrever(tipo):
                 print(f'Em seguida o setor que esta empresa atua: {setores}.')
                 setor = input('Selecione o setor: ')
                 print('Por fim, o investimento necessario que essa empresa necessita')
-                investimento_necessario = int(input('Escreva o valor: '))
+                investimento_necessario = pedir_numero('Escreva o valor: ')
                 cursor.execute('INSERT INTO STARTUPS (nome,setor,investimento_necessario) VALUES(?,?,?)',(nome_startup,setor,investimento_necessario))
                 print(f'Inscrição da(o) {nome_startup} concluído com sucesso!🥳')
                 conexao.commit
@@ -91,7 +110,7 @@ def inscrever(tipo):
                 print(f'Em seguida o setor de interesse: {setores}.')
                 setor_interesse = input('Escreva o setor: ')
                 print('Por fim, o seu capital disponivel')
-                capital_disponivel = int(input('Digite o valor: '))
+                capital_disponivel = pedir_numero('Digite o valor: ')
                 cursor.execute('INSERT INTO INVESTIDORES (nome,setor_interesse,capital_disponivel) VALUES(?,?,?)',(nome_investidor,setor_interesse,capital_disponivel))
                 conexao.commit()
                 break
@@ -125,12 +144,6 @@ def deletar(tipo):
         else: 
             print('Digite um valor válido') 
 
-def confirmar(mensagem):
-    while True:
-        resposta = input(mensagem).strip().upper()
-        if resposta in ('S', 'N'):
-            return resposta
-        print('Digite apenas S ou N.') == 'N'
         
 def atualizar(tipo):
     while True:
@@ -157,7 +170,7 @@ def atualizar(tipo):
                     novo_valor = input(f'Para qual setor deseja atualizar {setores}: ')
                     cursor.execute('UPDATE STARTUPS SET setor = ? WHERE nome = ?', (novo_valor, nome))
                 elif campo == '3':
-                    novo_valor = int(input('Qual será o novo investimento necessário:  '))
+                    novo_valor = pedir_numero('Qual será o novo investimento necessário:  ')
                     cursor.execute('UPDATE STARTUPS SET investimento_necessario = ? WHERE nome = ?', (novo_valor, nome))
                 else: 
                     print('Opção inválida. Nenhuma alteração foi feita.')
@@ -187,8 +200,11 @@ def atualizar(tipo):
                     novo_valor = input(f'Qual será seu novo setor de interesse {setores}: ')
                     cursor.execute('UPDATE INVESTIDORES SET setor_interesse = ? WHERE nome = ?', (novo_valor, nome))
                 elif campo == '3':
-                    novo_valor = int(input('Qual seu novo capital disponível :  '))
+                    novo_valor = pedir_numero('Qual seu novo capital disponível :  ')
                     cursor.execute('UPDATE INVESTIDORES SET capital_disponivel = ? WHERE nome = ?', (novo_valor, nome))
+                elif campo == '4':
+                    exit
+
                 else: 
                     print('Opção inválida. Nenhuma alteração foi feita.')
                     return 
@@ -209,7 +225,7 @@ def cruzar_dados():
             for investidor in investidores:
                 (id,nome_startup,setor,investimento_necessario) = startup
                 (id,nome_investidor,setor_interesse,capital_disponivel) = investidor        
-                if setor_interesse == setor and capital_disponivel >= investimento_necessario:
+                if setor_interesse.lower().strip() == setor.lower().strip() and capital_disponivel >= investimento_necessario:
                     encontrou_par = True
                     print(f'✅ Match: {nome_startup} ({setor}, precisa de {investimento_necessario}) '
                            f'com {nome_investidor} (capital de {capital_disponivel})')
