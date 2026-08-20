@@ -13,7 +13,7 @@ Capacidade financeira: o capital disponível do investidor precisa ser igual ou 
 
 Os dados são armazenados em um banco de dados SQLite (RIW27.bd), com tabelas separadas para startups e investidores. O usuário interage com o sistema por meio de um menu no terminal.
 
-Este projeto foi feito com fins de estudo e portfólio, aplicando conceitos de lógica de programação, manipulação de banco de dados relacional e organização de código em módulos.
+Este projeto foi feito com fins de estudo, aplicando conceitos de lógica de programação, manipulação de banco de dados relacional e organização de código em módulos.
 
 Funcionalidades
 Inscrever: cadastra uma nova startup ou um novo investidor.
