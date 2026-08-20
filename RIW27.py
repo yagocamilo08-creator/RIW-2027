@@ -37,6 +37,7 @@ def menu():
     print('Opção 3: Deletar ')
     print('Opção 4: Atualizar ')
     print('Opção 5: Cruzar dados ')
+    print('Opção 6: Sair do programa')
     opcao = input('Digite sua opção(apenas número): ')
     return opcao
 
@@ -233,6 +234,8 @@ def main():
             atualizar(tipo = int(input()))
         elif opcao == '5':
             cruzar_dados()
+        elif opcao == '6':
+            break
         else:
             print('Digite uma opção válida!')
 main()
