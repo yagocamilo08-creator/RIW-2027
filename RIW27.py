@@ -11,8 +11,7 @@
 
 import sqlite3 as bd
 
-setores= ['Fintech', 'Healthtech', 'Edtech', 'E-commerce', 'SaaS B2B', 'Foodtech', 'Proptech', 'Insurtech', 'Agtech', 'Cleantech', 'Logtech', 'Mobilidade', 'Martech', 'Gaming', 'Web3/Blockchain', 'Deeptech (IA/Biotech)', 'Govtech', 'HRtec']
-
+setores= ['Fintech', 'Healthtech', 'Edtech', 'E-commerce', 'SaaS B2B', 'Foodtech', 'Proptech', 'Insurtech', 'Agtech', 'Cleantech', 'Logtech', 'Mobilidade', 'Martech', 'Gaming', 'Blockchain', 'Deeptech ', 'Govtech', 'HRtec']
 def criar_banco():
 
     """
@@ -45,7 +44,7 @@ def menu():
     """
 
     print('Opção 1: Inscrever ')
-    print('Opção 2: Analisar todos/Listar ')
+    print('Opção 2: Analisar ')
     print('Opção 3: Deletar ')
     print('Opção 4: Atualizar ')
     print('Opção 5: Cruzar dados ')
@@ -70,6 +69,7 @@ def pedir_numero(mensagem):
                 return n
         except ValueError :
             print('Digite um número válido.')
+            
 
 def confirmar(mensagem):
 
@@ -84,7 +84,7 @@ def confirmar(mensagem):
             return resposta
         print('Digite apenas S ou N.') == 'N'
 
-def leitura(tipo):
+def leitura():
 
     """
     Lista os registros salvos no banco.
@@ -93,6 +93,7 @@ def leitura(tipo):
     """
 
     while True:
+        tipo = pedir_numero('Digite um número 1 ou 2. Sendo 1 para startup e 2 para investidor: ')
         if tipo == 1:
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
@@ -100,7 +101,7 @@ def leitura(tipo):
                 startups = cursor.fetchall()
                 for startup in startups:
                     (id,nome,setor,investimento_necessario) = startup
-                    print(f'Nome da startup: {nome}, setor que atua: {setor}, investimento necessario: {investimento_necessario}')
+                    print(f'Nome da startup: {nome}, setor que atua: {setor}, investimento necessario: R${investimento_necessario}')
                 break
         elif tipo == 2:
             with bd.connect('RIW27.bd') as conexao:
@@ -109,13 +110,14 @@ def leitura(tipo):
                     investidores = cursor.fetchall()
                     for investidor in investidores:
                         (id,nome,setor_interesse,capital_disponivel) = investidor
-                        print(f'Nome do investidor: {nome}, setor de interesse: {setor_interesse}, capital disponível: {capital_disponivel}')
+                        print(f'Nome do investidor: {nome}, setor de interesse: {setor_interesse}, capital disponível: R${capital_disponivel}')
                     break
         else: 
-            print('Digite um valor válido') 
+            print('Digite um valor válido')
+             
             
 
-def inscrever(tipo):
+def inscrever():
 
     """
     Cadastra um novo registro no banco.
@@ -124,6 +126,7 @@ def inscrever(tipo):
     """
 
     while True:
+        tipo = pedir_numero('Digite um número 1 ou 2. Sendo 1 para startup e 2 para investidor: ')
         if tipo == 1: #tipo 1 = startups
             print('Vamos inscrever uma startup!')
             with bd.connect('RIW27.bd') as conexao:
@@ -151,13 +154,14 @@ def inscrever(tipo):
                 print('Por fim, o seu capital disponivel')
                 capital_disponivel = pedir_numero('Digite o valor: ')
                 cursor.execute('INSERT INTO INVESTIDORES (nome,setor_interesse,capital_disponivel) VALUES(?,?,?)',(nome_investidor,setor_interesse,capital_disponivel))
+                print(f'Inscrição da(o) {nome_investidor} concluído com sucesso!🥳')
                 conexao.commit()
                 break
 
         else: 
             print('Digite um valor válido') 
              
-def deletar(tipo):
+def deletar():
 
     """
     Remove um registro do banco pelo nome.
@@ -167,10 +171,11 @@ def deletar(tipo):
     """
 
     while True:
+        tipo = pedir_numero('Digite um número 1 ou 2. Sendo 1 para startup e 2 para investidor: ')
         if tipo == 1: #tipo 1 = startups
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
-                leitura(tipo)
+                leitura()
                 nome = input('Qual startup você deseja deletar: ')
                 cursor.execute('DELETE FROM STARTUPS WHERE nome = ?', (nome,))
                 conexao.commit()
@@ -181,8 +186,9 @@ def deletar(tipo):
         elif tipo == 2: #tipo 2 = insvestidor
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
-                leitura(tipo)
-                nome = input('Qual investidor(a) você deseja deletar: ')
+
+                leitura()
+                nome = input('Qual investidor(a) você deseja deletar: ').capitalize()
                 cursor.execute('DELETE FROM INVESTIDORES WHERE nome = ?', (nome,))
                 conexao.commit()
                 print(f'O(a) investidor(a) {nome} foi deletado(a)!')
@@ -192,7 +198,7 @@ def deletar(tipo):
             print('Digite um valor válido') 
 
         
-def atualizar(tipo):
+def atualizar():
 
     """
     Edita um campo específico de um registro já cadastrado.
@@ -202,6 +208,7 @@ def atualizar(tipo):
     """
 
     while True:
+        tipo = pedir_numero('Digite um número 1 ou 2. Sendo 1 para startup e 2 para investidor: ')
         if tipo == 1: #tipo 1 = startups
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
@@ -309,16 +316,16 @@ def main():
         opcao = menu()
         if opcao == '1':
             print('Digite 1 para inscrever uma startup e 2 para um investidor!')
-            inscrever(tipo = int(input()))
+            inscrever()
         elif opcao == '2':
-            print('Digite 1 para inscrever uma startup e 2 para um investidor!')
-            leitura(tipo = int(input()))
+            print('Digite 1 para visualizar uma startup e 2 para um investidor!')
+            leitura()
         elif opcao == '3':
-            print('Digite 1 para inscrever uma startup e 2 para um investidor!')
-            deletar(tipo = int(input()))
+            print('Digite 1 para deletar uma startup e 2 para um investidor!')
+            deletar()
         elif opcao == '4':
-            print('Digite 1 para inscrever uma startup e 2 para um investidor!')
-            atualizar(tipo = int(input()))
+            print('Digite 1 para atualizar uma startup e 2 para um investidor!')
+            atualizar()
         elif opcao == '5':
             cruzar_dados()
         elif opcao == '6':
@@ -326,3 +333,12 @@ def main():
         else:
             print('Digite uma opção válida!')
 main()
+
+
+
+
+
+# fazer com que a pergunta da leitura nao apareça na função de deletar. Criar uma função de leitura global, e ela so vai ser chamada dentro das outras funções 
+
+
+# 
