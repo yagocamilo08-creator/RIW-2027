@@ -84,6 +84,24 @@ def confirmar(mensagem):
             return resposta
         print('Digite apenas S ou N.') == 'N'
 
+def leitura_startup():
+    with bd.connect('RIW27.bd') as conexao:
+                    cursor = conexao.cursor()
+                    cursor.execute('SELECT * FROM STARTUPS')
+                    startups = cursor.fetchall()
+                    for startup in startups:
+                        (id,nome,setor,investimento_necessario) = startup
+                        print(f'Nome da startup: {nome}, setor que atua: {setor}, investimento necessario: R${investimento_necessario}')
+
+def leitura_investidores():
+    with bd.connect('RIW27.bd') as conexao:
+                        cursor = conexao.cursor()
+                        cursor.execute('SELECT * FROM INVESTIDORES')
+                        investidores = cursor.fetchall()
+                        for investidor in investidores:
+                            (id,nome,setor_interesse,capital_disponivel) = investidor
+                            print(f'Nome do investidor: {nome}, setor de interesse: {setor_interesse}, capital disponível: R${capital_disponivel}')
+
 def leitura():
 
     """
@@ -175,7 +193,7 @@ def deletar():
         if tipo == 1: #tipo 1 = startups
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
-                leitura()
+                leitura_startup()
                 nome = input('Qual startup você deseja deletar: ')
                 cursor.execute('DELETE FROM STARTUPS WHERE nome = ?', (nome,))
                 conexao.commit()
@@ -187,7 +205,7 @@ def deletar():
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
 
-                leitura()
+                leitura_investidores()
                 nome = input('Qual investidor(a) você deseja deletar: ').capitalize()
                 cursor.execute('DELETE FROM INVESTIDORES WHERE nome = ?', (nome,))
                 conexao.commit()
@@ -212,7 +230,7 @@ def atualizar():
         if tipo == 1: #tipo 1 = startups
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
-                leitura(tipo)
+                leitura_startup()
                 nome = input('Qual startup deseja atualizar: ')
 
                 if confirmar('Deseja realmente mudar algo nesta startup(S/N)? '):
@@ -242,7 +260,7 @@ def atualizar():
         elif tipo == 2: # Tipo 2 = Investidores
             with bd.connect('RIW27.bd') as conexao:
                 cursor = conexao.cursor()
-                leitura(tipo)
+                leitura_investidores()
                 nome = input('Qual investidor deseja atualizar: ')
 
                 if confirmar('Deseja realmente mudar algo neste investidor(S/N)? ') == 'N':
@@ -315,16 +333,12 @@ def main():
     while True:
         opcao = menu()
         if opcao == '1':
-            print('Digite 1 para inscrever uma startup e 2 para um investidor!')
             inscrever()
         elif opcao == '2':
-            print('Digite 1 para visualizar uma startup e 2 para um investidor!')
             leitura()
         elif opcao == '3':
-            print('Digite 1 para deletar uma startup e 2 para um investidor!')
             deletar()
         elif opcao == '4':
-            print('Digite 1 para atualizar uma startup e 2 para um investidor!')
             atualizar()
         elif opcao == '5':
             cruzar_dados()
